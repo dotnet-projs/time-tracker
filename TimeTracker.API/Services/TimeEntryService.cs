@@ -1,7 +1,4 @@
 using Mapster;
-using TimeTracker.API.Repositories;
-using TimeTracker.Shared.Entities;
-using TimeTracker.Shared.Models.TimeEntry;
 
 namespace TimeTracker.API.Services;
 
@@ -14,9 +11,9 @@ public class TimeEntryService : ITimeEntryService
         _timeEntryRepo = timeEntryRepo;
     }
 
-    public List<TimeEntryResponse> GetAllTimeEntries()
+    public async Task<List<TimeEntryResponse>> GetAllTimeEntries()
     {
-        var result = _timeEntryRepo.GetAllTimeEntries();
+        var result = await _timeEntryRepo.GetAllTimeEntries();
         return result.Adapt<List<TimeEntryResponse>>();
         // manual mapping
         // return result.Select(t => new TimeEntryResponse
@@ -28,9 +25,9 @@ public class TimeEntryService : ITimeEntryService
         // }).ToList();
     }
     
-    public TimeEntryResponse? GetTimeEntryById(int id)
+    public async Task<TimeEntryResponse?> GetTimeEntryById(int id)
     {
-        var result = _timeEntryRepo.GetTimeEntryById(id);
+        var result = await _timeEntryRepo.GetTimeEntryById(id);
         if (result is null)
         {
             return null;
@@ -38,10 +35,10 @@ public class TimeEntryService : ITimeEntryService
         return result.Adapt<TimeEntryResponse>();
     }
 
-    public List<TimeEntryResponse> CreateTimeEntry(TimeEntryCreateRequest request)
+    public async Task<List<TimeEntryResponse>> CreateTimeEntry(TimeEntryCreateRequest request)
     {
         var newEntry = request.Adapt<TimeEntry>();
-        var result = _timeEntryRepo.CreateTimeEntry(newEntry);
+        var result = await _timeEntryRepo.CreateTimeEntry(newEntry);
         return result.Adapt<List<TimeEntryResponse>>();
         // manual mapping
         // var newEntry = new TimeEntry
@@ -60,20 +57,28 @@ public class TimeEntryService : ITimeEntryService
         // }).ToList();
     }
 
-    public List<TimeEntryResponse>? UpdateTimeEntry(int id, TimeEntryUpdateRequest request)
+    public async Task<List<TimeEntryResponse>?> UpdateTimeEntry(int id, TimeEntryUpdateRequest request)
     {
-        var updateEntry = request.Adapt<TimeEntry>();
-        var result = _timeEntryRepo.UpdateTimeEntry(id, updateEntry);
-        if (result is null)
+        try
+        {
+            var updateEntry = request.Adapt<TimeEntry>();
+            var result = await _timeEntryRepo.UpdateTimeEntry(id, updateEntry);
+            return result.Adapt<List<TimeEntryResponse>>();
+        }
+        catch (EntityNotFoundException)
         {
             return null;
         }
-        return result.Adapt<List<TimeEntryResponse>>();
+
+        // if (result is null)
+        //  {
+        //  return null;
+        //  }
     }
 
-    public List<TimeEntryResponse>? DeleteTimeEntry(int id)
+    public async Task<List<TimeEntryResponse>?> DeleteTimeEntry(int id)
     {
-        var result = _timeEntryRepo.DeleteTimeEntry(id);
+        var result = await _timeEntryRepo.DeleteTimeEntry(id);
         if (result is null)
         {
             return null;
