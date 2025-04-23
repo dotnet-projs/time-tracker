@@ -15,7 +15,7 @@ public class TimeEntryService : ITimeEntryService
     {
         var result = await _timeEntryRepo.GetAllTimeEntries();
         return result.Adapt<List<TimeEntryResponse>>();
-        // manual mapping
+        // manual mapping (replaced with mapster, no config needed unlike auto mapper as it provides extensions):
         // return result.Select(t => new TimeEntryResponse
         // {
         //     Id = t.Id,

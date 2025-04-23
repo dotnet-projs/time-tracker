@@ -1,5 +1,3 @@
-
-
 namespace TimeTracker.API.Repositories;
 
 public class TimeEntryRepository : ITimeEntryRepository
@@ -11,7 +9,7 @@ public class TimeEntryRepository : ITimeEntryRepository
         _context = context;
     }
 
-    private static List<TimeEntry> _timeEntries = new List<TimeEntry>
+    /* private static List<TimeEntry> _timeEntries = new List<TimeEntry>
     {
         new TimeEntry
         {
@@ -19,16 +17,22 @@ public class TimeEntryRepository : ITimeEntryRepository
             Project = "Time Tracker App",
             End = DateTime.Now.AddHours(1)
         }
-    };
+    }; */
 
     public async Task<List<TimeEntry>> GetAllTimeEntries()
     {
-        return await _context.TimeEntries.ToListAsync();
+        // Includes ensures the Project property is loaded to prevent null values in TimeEntries
+        return await _context.TimeEntries
+            .Include(te => te.Project)
+             //.ThenInclude(p => p.ProjectDetails) // ensures ProjectDetails inside the Project isnt null
+            .ToListAsync();
     }
     
     public async Task<TimeEntry?> GetTimeEntryById(int id)
     {
-        var timeEntry = await _context.TimeEntries.FindAsync(id);
+        var timeEntry = await _context.TimeEntries
+            .Include(te => te.Project)
+            .FirstOrDefaultAsync(te => te.Id == id);
         return timeEntry;
     }
 
@@ -37,7 +41,7 @@ public class TimeEntryRepository : ITimeEntryRepository
         _context.TimeEntries.Add(timeEntry);
         await _context.SaveChangesAsync();
 
-        return await _context.TimeEntries.ToListAsync();
+        return await GetAllTimeEntries();
     }
 
     public async Task<List<TimeEntry>> UpdateTimeEntry(int id, TimeEntry timeEntry)
@@ -48,7 +52,7 @@ public class TimeEntryRepository : ITimeEntryRepository
             throw new EntityNotFoundException($"Entity with ID {id} was not found.");
         }
 
-        dbTimeEntry.Project = timeEntry.Project;
+        dbTimeEntry.ProjectId = timeEntry.ProjectId;
         dbTimeEntry.Start = timeEntry.Start;
         dbTimeEntry.End = timeEntry.End;
         dbTimeEntry.DateUpdated = DateTime.Now;
@@ -57,14 +61,13 @@ public class TimeEntryRepository : ITimeEntryRepository
 
         return await GetAllTimeEntries();
 
-        // var entryToUpdateIndex = _timeEntries.FindIndex(t => t.Id == id);
-        // if (entryToUpdateIndex == -1) // _timeEntries[entryToUpdateIndex] == null
-        // {
-        //    return null;
-        // }
-
-        // _timeEntries[entryToUpdateIndex] = timeEntry;
-    }
+        /* var entryToUpdateIndex = _timeEntries.FindIndex(t => t.Id == id);
+        if (entryToUpdateIndex == -1) // _timeEntries[entryToUpdateIndex] == null
+        {
+            return null;
+        }
+        _timeEntries[entryToUpdateIndex] = timeEntry; */
+    } 
 
     public async Task<List<TimeEntry>?> DeleteTimeEntry(int id)
     {
