@@ -1,4 +1,5 @@
 using Mapster;
+using TimeTracker.Shared.Models.Project;
 
 namespace TimeTracker.API.Services;
 
@@ -15,6 +16,18 @@ public class TimeEntryService : ITimeEntryService
     {
         var result = await _timeEntryRepo.GetAllTimeEntries();
         return result.Adapt<List<TimeEntryResponse>>();
+    } 
+
+    /* public List<TimeEntryResponse> GetAllTimeEntries()
+    {
+        var result = _timeEntryRepo.GetAllTimeEntries();
+        return result.Adapt<List<TimeEntryResponse>>();
+    } */
+
+    /* public async Task<List<TimeEntryResponse>> GetAllTimeEntries()
+    {
+        var result = await _timeEntryRepo.GetAllTimeEntries();
+        return result.Adapt<List<TimeEntryResponse>>();
         // manual mapping (replaced with mapster, no config needed unlike auto mapper as it provides extensions):
         // return result.Select(t => new TimeEntryResponse
         // {
@@ -23,7 +36,7 @@ public class TimeEntryService : ITimeEntryService
         //     Start = t.Start, 
         //     End = t.End
         // }).ToList();
-    }
+    } */
     
     public async Task<TimeEntryResponse?> GetTimeEntryById(int id)
     {
@@ -35,7 +48,33 @@ public class TimeEntryService : ITimeEntryService
         return result.Adapt<TimeEntryResponse>();
     }
 
-    public async Task<List<TimeEntryResponse>> CreateTimeEntry(TimeEntryCreateRequest request)
+    public async Task<List<TimeEntryByProjectResponse>> GetTimeEntriesByProject(int projectId)
+    {
+        var result = await _timeEntryRepo.GetTimeEntriesByProject(projectId);
+        return result.Adapt<List<TimeEntryByProjectResponse>>();
+    }
+
+    /*
+        public TimeEntryResponse? GetTimeEntryById(int id)
+    {
+        var result = await _timeEntryRepo.GetTimeEntryById(id);
+        if (result is null)
+        {
+            return null;
+        }
+        return result.Adapt<TimeEntryResponse>();
+    }
+     */
+
+    /* public List<TimeEntryResponse> CreateTimeEntry(TimeEntryCreateRequest request)
+    {
+        var newEntry = request.Adapt<TimeEntry>();
+        var result = _timeEntryRepo.CreateTimeEntry(newEntry);
+        return result.Adapt<List<TimeEntryResponse>>();
+    } */
+
+    
+    public async Task<List<TimeEntryResponse>> CreateTimeEntry(ProjectCreateRequest request)
     {
         var newEntry = request.Adapt<TimeEntry>();
         var result = await _timeEntryRepo.CreateTimeEntry(newEntry);
@@ -57,7 +96,14 @@ public class TimeEntryService : ITimeEntryService
         // }).ToList();
     }
 
-    public async Task<List<TimeEntryResponse>?> UpdateTimeEntry(int id, TimeEntryUpdateRequest request)
+    /* public List<TimeEntryResponse>? UpdateTimeEntry(int id, TimeEntryUpdateRequest request)
+    {
+        var updatedEntry = request.Adapt<TimeEntry>();
+        var result = _timeEntryRepo.UpdateTimeEntry(id, updatedEntry);
+    } */
+
+    
+    public async Task<List<TimeEntryResponse>?> UpdateTimeEntry(int id, ProjectUpdateRequest request)
     {
         try
         {
@@ -70,12 +116,25 @@ public class TimeEntryService : ITimeEntryService
             return null;
         }
 
+        // var updateEntry = request.Adapt<TimeEntry>();
+        // var result = await _timeEntryRepo.UpdateTimeEntry(id, updateEntry);
         // if (result is null)
         //  {
         //  return null;
-        //  }
+        // }
     }
+    /* public List<TimeEntryResponse>? DeleteTimeEntry(int id)
+    {
+        var result = _timeEntryRepo.DeleteTimeEntry(id);
+        if (result is null)
+        {
+            return null;
+        }
 
+        return result.Adapt<List<TimeEntryResponse>>();
+    } */
+
+    
     public async Task<List<TimeEntryResponse>?> DeleteTimeEntry(int id)
     {
         var result = await _timeEntryRepo.DeleteTimeEntry(id);
@@ -86,4 +145,4 @@ public class TimeEntryService : ITimeEntryService
 
         return result.Adapt<List<TimeEntryResponse>>();
     }
-}
+} 

@@ -12,7 +12,7 @@ using TimeTracker.API.Data;
 namespace TimeTracker.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250304192904_UserProjectsRelation")]
+    [Migration("20250510190256_UserProjectsRelation")]
     partial class UserProjectsRelation
     {
         /// <inheritdoc />
