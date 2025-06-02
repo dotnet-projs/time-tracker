@@ -28,6 +28,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 ConfigureMapster();
 
 app.UseHttpsRedirection();
+
 app.MapControllers();
 
 app.Run();
