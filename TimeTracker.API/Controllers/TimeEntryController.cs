@@ -49,7 +49,7 @@ public class TimeEntryController : ControllerBase
     } */
 
     [HttpPost]
-    public async Task<ActionResult<List<TimeEntryResponse>>> CreateTimeEntry(ProjectCreateRequest timeEntry)
+    public async Task<ActionResult<List<TimeEntryResponse>>> CreateTimeEntry(TimeEntryCreateRequest timeEntry)
     {
         return Ok(await _timeEntryService.CreateTimeEntry(timeEntry));
     }
@@ -92,7 +92,7 @@ public class TimeEntryController : ControllerBase
     } */
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<List<TimeEntryResponse>>> UpdateTimeEntry(int id, ProjectUpdateRequest timeEntry)
+    public async Task<ActionResult<List<TimeEntryResponse>>> UpdateTimeEntry(int id, TimeEntryUpdateRequest timeEntry)
     {
         var result = await _timeEntryService.UpdateTimeEntry(id, timeEntry);
         if (result is null)

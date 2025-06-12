@@ -1,0 +1,40 @@
+﻿@inject HttpClient Http
+
+<div class="form-group my-4">
+    <!-- 2 way binding to update parent -->
+    <InputSelect @bind-Value="projectId">
+        <option value="0">All Projects</option>
+        @foreach (var project in projects)
+        {
+            <option value="@project.Id">@project.Name</option>
+        }
+    </InputSelect>
+</div>
+
+@code {
+    // event callback invoked by parent (TimeEntries)
+    [Parameter]
+    public EventCallback<int> ProjectSelected { get; set; }
+
+    private List<ProjectResponse> projects = new List<ProjectResponse>();
+
+    private int projectId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Http.GetFromJsonAsync<List<ProjectResponse>>("api/project");
+        if (result != null)
+            projects = result;
+    }
+
+    private async Task OnInput(ChangeEventArgs e) 
+    {
+        if(e.Value != null)
+        {
+            if(int.TryParse(e.Value.ToString(), out int projectId))
+            {
+                await ProjectSelected.InvokeAsync(projectId);
+            }
+        }
+    }
+}

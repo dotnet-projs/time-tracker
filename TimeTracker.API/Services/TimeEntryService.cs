@@ -74,7 +74,7 @@ public class TimeEntryService : ITimeEntryService
     } */
 
     
-    public async Task<List<TimeEntryResponse>> CreateTimeEntry(ProjectCreateRequest request)
+    public async Task<List<TimeEntryResponse>> CreateTimeEntry(TimeEntryCreateRequest request)
     {
         var newEntry = request.Adapt<TimeEntry>();
         var result = await _timeEntryRepo.CreateTimeEntry(newEntry);
@@ -103,7 +103,7 @@ public class TimeEntryService : ITimeEntryService
     } */
 
     
-    public async Task<List<TimeEntryResponse>?> UpdateTimeEntry(int id, ProjectUpdateRequest request)
+    public async Task<List<TimeEntryResponse>?> UpdateTimeEntry(int id, TimeEntryUpdateRequest request)
     {
         try
         {
